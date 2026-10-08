@@ -1,0 +1,51 @@
+# ===========================================================================
+# requirements.txt —— 完整依赖（含深度学习方案用的 dlib）
+#
+# 安装命令（在项目目录下打开终端）：
+#     python -m pip install -r requirements.txt
+#
+# 【重要】Windows + Python 3.13 用户请看 README.md 第五节：
+#   dlib 官方包在 Windows 上没有预编译轮子，直接 pip install dlib 会尝试
+#   现场编译 C++（需要 Visual Studio），多数人装不上。
+#   解决办法是改用预编译的 dlib-bin，安装命令见 README 第五节。
+#
+# 完全不想碰 dlib？改用轻量版，程序会自动切换到 OpenCV 后端：
+#     pip install -r requirements-lite.txt
+# ===========================================================================
+
+# --- 核心：摄像头读取 + 图像处理 + 画框写字 ---
+# 上限锁在 <5：OpenCV 5.x 是重大版本升级，部分接口有变动，
+# 本项目按 4.x 的接口编写，锁住大版本最稳妥。
+opencv-python>=4.8,<5
+
+# --- 核心：稳定版 dlib（face_recognition 的底层，负责"特征提取"的深度网络）---
+# 若安装失败，请用 dlib-bin 替代（见 README 第五节），不要同时装这两个。
+dlib>=19.24
+
+# --- 核心：人脸检测 + 128 维特征提取 + 特征比对的友好封装 ---
+face_recognition>=1.3.0
+
+# --- 数值计算（OpenCV / face_recognition / dlib 都依赖它）---
+# 注意 opencv-python 4.14 起在 Python 3.9+ 上要求 numpy>=2
+numpy>=1.24
+
+# --- 用来在画面上渲染中文人名（OpenCV 自带的 putText 不支持中文）---
+# 没有它程序也能跑，只是中文名会显示成英文占位符
+Pillow>=9.0.0
+
+# --- 必须锁在 <81！---
+# face_recognition_models 内部用 `from pkg_resources import resource_filename`
+# 来定位那 4 个 .dat 模型文件，而 pkg_resources 在 setuptools 81.0.0 里被彻底删除。
+# 装成 81+ 会导致 import face_recognition 时报：
+#     ModuleNotFoundError: No module named 'pkg_resources'
+# 注意：Python 3.12 起 pip 不再自动安装 setuptools，所以这一行是必需的，不是可选。
+setuptools>=68,<81
+
+# ---------------------------------------------------------------------------
+# 可选：Windows + Python 3.13 的免编译方案（把上面第 2 项换成这个）
+# 它不是 dlib 的替代品，而是同一份 dlib 的预编译版本，
+# 装完 import dlib 一样可用。命令：
+#     pip install dlib-bin
+# 详见 README.md 第五节。
+# ---------------------------------------------------------------------------
+# dlib-bin>=20.0.1

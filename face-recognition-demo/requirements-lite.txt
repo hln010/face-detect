@@ -1,0 +1,21 @@
+# ===========================================================================
+# requirements-lite.txt —— 轻量版依赖（不装 dlib / face_recognition）
+#
+# 用途：dlib 在 Windows 上需要现场编译 C++，新手经常装不上。
+#      只装下面这两个包，程序会自动切换到 OpenCV 备用后端（LBPH），
+#      同样是纯本地、不联网、能实时跑，只是精度不如深度学习方案。
+#
+# 安装命令：
+#     pip install -r requirements-lite.txt
+# 然后正常启动（会自动选择 opencv 后端）：
+#     python main.py
+# 也可以强制指定：
+#     python main.py --backend opencv
+# ===========================================================================
+
+# 必须带 contrib：LBPH 人脸识别器在 opencv-contrib-python 里
+opencv-contrib-python>=4.8.0
+
+numpy>=1.24.0
+
+Pillow>=9.0.0
